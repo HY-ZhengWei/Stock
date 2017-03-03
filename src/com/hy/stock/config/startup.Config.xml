@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="startupConfig"   class="java.util.ArrayList" />
+	<import name="item"            class="org.hy.common.app.Param" />
+	
+	
+	
+	<!-- 启动加载XML配置信息的列表 -->
+	<xconfig>
+		
+	    <startupConfig id="StartupConfig">
+	    
+	    	<item>
+	    		<value>http.Stock.xml</value>
+	    	</item>
+	    	
+	    	<item>
+	    		<value>mail.Config.xml</value>
+	    	</item>
+	    	
+	    	
+	    	
+	    	<item>
+				<value>sys.DB.Config.xml</value>
+			</item>
+			
+			<item>
+				<value>db/db.StockConfig.xml</value>
+			</item>
+			
+			<item>
+				<value>db/db.StockInfo.xml</value>
+			</item>
+			
+			<item>
+				<value>db/db.StockInfoDay.xml</value>
+			</item>
+			
+			<item>
+				<value>db/db.StockInfoDay.History.xml</value>
+			</item>
+			
+			<item>
+				<value>db/db.StockInfoDay.Validation.xml</value>
+			</item>
+			
+			<item>
+				<value>db/db.StockInfoDay.CalcMACD.xml</value>
+			</item>
+			
+			<item>
+			    <value>db/db.StockInfoDay.CalcKDJ.xml</value>
+			</item>
+			
+			<item>
+			    <value>db/db.StockInfoDay.CalcWR.xml</value>
+			</item>
+			
+			<item>
+			    <value>db/db.StockInfoDay.CalcMA.xml</value>
+			</item>
+			
+			<item>
+				<value>db/db.LargeTrading.xml</value>
+			</item>
+			
+			<item>
+				<value>db/db.MessageLog.xml</value>
+			</item>
+			
+		</startupConfig>
+		
+	</xconfig>
+	
+</config>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="job"             class="org.hy.common.thread.Job" />
+	<import name="jobs"            class="org.hy.common.thread.Jobs" />
+	
+	
+	
+	<!-- 任务配置信息 -->
+	<xconfig>
+		
+	    <job id="JOB_StartRequest">
+	    	<code>JOB_StartRequest</code>
+	    	<name>启动请求股票接口，其后通过线程延时写入数据库</name>
+	    	<intervalType ref="this.$IntervalType_Second"/>
+	    	<intervalLen>5</intervalLen>
+	    	<startTime>2012-07-07 00:00:00</startTime>
+	    	<xjavaID>StockService</xjavaID>
+	    	<methodName>start</methodName>
+	    </job>
+	    
+	    
+	    <job id="JOB_StartLargeTrading">
+	    	<code>JOB_StartLargeTrading</code>
+	    	<name>启动请求大单交易接口，其后通过线程延时写入数据库</name>
+	    	<intervalType ref="this.$IntervalType_Minute"/>
+	    	<intervalLen>3</intervalLen>
+	    	<startTime>2012-07-07 00:05:00</startTime>
+	    	<xjavaID>LargeTradingService</xjavaID>
+	    	<methodName>start</methodName>
+	    </job>
+	    
+	    
+	    <job id="JOB_DelRepeating">
+	    	<code>JOB_DelRepeating</code>
+	    	<name>删除重复数据</name>
+	    	<intervalType ref="this.$IntervalType_Minute"/>
+	    	<intervalLen>1</intervalLen>
+	    	<startTime>2012-07-07 00:10:00</startTime>
+	    	<xjavaID>StockInfoDAO</xjavaID>
+	    	<methodName>delRepeating</methodName>
+	    </job>
+	    
+	    
+	    <job id="JOB_DelInvalid_01">
+	    	<code>JOB_DelInvalid_01</code>
+	    	<name>删除无效数据(每天开盘前的数据)</name>
+	    	<intervalType ref="this.$IntervalType_Day"/>
+	    	<intervalLen>1</intervalLen>
+	    	<startTime>2012-07-07 09:35:00</startTime>
+	    	<xjavaID>StockInfoDAO</xjavaID>
+	    	<methodName>delInvalidData</methodName>
+	    	<initExecute>true</initExecute>
+	    </job>
+	    
+	    
+	    <job id="JOB_DelInvalid_02">
+	    	<code>JOB_DelInvalid_02</code>
+	    	<name>删除无效数据(每天开盘前的数据)</name>
+	    	<intervalType ref="this.$IntervalType_Day"/>
+	    	<intervalLen>1</intervalLen>
+	    	<startTime>2012-07-07 13:05:00</startTime>
+	    	<xjavaID>StockInfoDAO</xjavaID>
+	    	<methodName>delInvalidData</methodName>
+	    </job>
+	    
+	    
+	    <job id="JOB_CacheStockConfigs_01">
+	    	<code>JOB_CacheStockConfigs_01</code>
+	    	<name>高速缓存股票配置信息</name>
+	    	<intervalType ref="this.$IntervalType_Day"/>
+	    	<intervalLen>1</intervalLen>
+	    	<startTime>2012-07-07 08:00:00</startTime>
+	    	<xjavaID>StockConfigDAO</xjavaID>
+	    	<methodName>cacheStockConfigs</methodName>
+	    	<initExecute>true</initExecute>
+	    </job>
+	    
+	    
+	    <job id="JOB_CacheStockConfigs_02">
+	    	<code>JOB_CacheStockConfigs_02</code>
+	    	<name>高速缓存股票配置信息</name>
+	    	<intervalType ref="this.$IntervalType_Day"/>
+	    	<intervalLen>1</intervalLen>
+	    	<startTime>2012-07-07 12:50:00</startTime>
+	    	<xjavaID>StockConfigDAO</xjavaID>
+	    	<methodName>cacheStockConfigs</methodName>
+	    </job>
+	    
+	    
+	    <job id="JOB_MakeStockInfoDays">
+	    	<code>JOB_MakeStockInfoDays</code>
+	    	<name>生成股票每天最终交易数据</name>
+	    	<intervalType ref="this.$IntervalType_Day"/>
+	    	<intervalLen>1</intervalLen>
+	    	<startTime>2012-07-07 01:00:00</startTime>
+	    	<xjavaID>StockInfoDayDAO</xjavaID>
+	    	<methodName>makeStockInfoDays</methodName>
+	    	<initExecute>true</initExecute>
+	    </job>
+	    
+	    
+	    <job id="JOB_CacheLargeTradings">
+	    	<code>JOB_CacheLargeTradings</code>
+	    	<name>缓存当天已保存在数据库中的大单交易数据</name>
+	    	<intervalType ref="this.$IntervalType_Day"/>
+	    	<intervalLen>1</intervalLen>
+	    	<startTime>2012-07-07 09:20:00</startTime>
+	    	<xjavaID>LargeTradingDAO</xjavaID>
+	    	<methodName>cacheLargeTradings</methodName>
+	    	<initExecute>true</initExecute>
+	    </job>
+	    
+		
+	    
+	    <jobs id="JOBS" this="JOBS">
+	    	<addJob ref="JOB_StartRequest"         />
+	    	<addJob ref="JOB_StartLargeTrading"    />
+	    	<addJob ref="JOB_DelRepeating"         />
+	    	<addJob ref="JOB_DelInvalid_01"        />
+	    	<addJob ref="JOB_DelInvalid_02"        />
+	    	<addJob ref="JOB_CacheStockConfigs_01" />
+	    	<addJob ref="JOB_CacheStockConfigs_02" />
+	    	<addJob ref="JOB_MakeStockInfoDays"    />
+	    	<addJob ref="JOB_CacheLargeTradings"   />
+	    	<call name="startup" />
+	    </jobs>
+		
+	</xconfig>
+	
+</config>

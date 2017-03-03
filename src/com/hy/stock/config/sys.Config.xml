@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="xparam"          class="java.util.Hashtable" />
+	<import name="item"            class="org.hy.common.app.Param" />
+	
+	
+	
+	<!-- 系统配置参数信息 -->
+	<xconfig>
+		
+	    <xparam id="SYSParam" key="name">
+	    
+	    	<item id="APPWEBID">
+	            <name>APPWEBID</name>
+				<value>Stock</value>
+				<comment>部署Web服务所在主机的标示(建议只包含：数字和英文)</comment>
+	        </item>
+	    
+	    	<item id="RootPackageName">
+	            <name>RootPackageName</name>
+				<value>com.hy.stock</value>
+				<comment>顶级包的路径。用于初始化。一般不修改</comment>
+	        </item>
+			
+			<item id="DataSourceType">
+	            <name>DataSourceType</name>
+				<value>MYSQL</value>
+				<comment>配置数据库是什么类型的。目前支持有：MYSQL、SQLSERVER</comment>
+	        </item>
+	        
+	        <item id="News_UpDownRange">
+	            <name>News_UpDownRange</name>
+				<value>2.5</value>
+				<comment>涨跌幅超过多少发送消息</comment>
+	        </item>
+	        
+	        <item id="News_UpDownRange_IntervalTime">
+	            <name>News_UpDownRange_IntervalTime</name>
+				<value>7200</value>
+				<comment>涨跌幅超过多少发送消息的时间间隔（单位：秒）</comment>
+	        </item>
+	        
+	        <item id="News_KDJ_IntervalTime">
+	            <name>News_KDJ_IntervalTime</name>
+				<value>3600</value>
+				<comment>KDJ指标发送消息的时间间隔（单位：秒）</comment>
+	        </item>
+	        
+	        <item id="News_MACD_IntervalTime">
+	            <name>News_MACD_IntervalTime</name>
+				<value>3600</value>
+				<comment>MACD指标发送消息的时间间隔（单位：秒）</comment>
+	        </item>
+	        
+	        <item id="News_WR_IntervalTime">
+	            <name>News_WR_IntervalTime</name>
+				<value>7200</value>
+				<comment>WR指标发送消息的时间间隔（单位：秒）</comment>
+	        </item>
+	        
+	        <item id="News_MA_IntervalTime">
+	            <name>News_MA_IntervalTime</name>
+				<value>7200</value>
+				<comment>MA指标发送消息的时间间隔（单位：秒）</comment>
+	        </item>
+	        
+	        <item id="News_BargainSum">
+	            <name>News_BargainSum</name>
+				<value>500</value>
+				<comment>大单交易中成交额(万元)超过多少发送消息。它为默认值，当TStockConfig中对应字段已配置时，将不用此值</comment>
+	        </item>
+	        
+	        <item id="Morning_Begin">
+	            <name>Morning_Begin</name>
+				<value>09:30:00</value>
+				<comment>上午开盘时间</comment>
+	        </item>
+	        
+	        <item id="Morning_End">
+	            <name>Morning_End</name>
+				<value>11:30:00</value>
+				<comment>上午休盘时间</comment>
+	        </item>
+	        
+	        <item id="Afternoon_Begin">
+	            <name>Afternoon_Begin</name>
+				<value>13:00:00</value>
+				<comment>下午开盘时间</comment>
+	        </item>
+	        
+	        <item id="Afternoon_End">
+	            <name>Afternoon_End</name>
+				<value>15:00:00</value>
+				<comment>下午休盘时间</comment>
+	        </item>
+			
+	        <item id="TPool_MaxThread">
+	            <name>TPool_MaxThread</name>
+				<value>16</value>
+				<comment>最大线程数</comment>
+	        </item>
+	        
+	        <item id="TPool_MinThread">
+	            <name>TPool_MinThread</name>
+				<value>2</value>
+				<comment>最小线程数</comment>
+	        </item>
+	        
+	        <item id="TPool_MinIdleThread">
+	            <name>TPool_MinIdleThread</name>
+				<value>2</value>
+				<comment>最小空闲数</comment>
+	        </item>
+	        
+	        <item id="TPool_IntervalTime">
+	            <name>TPool_IntervalTime</name>
+				<value>50</value>
+				<comment>间隔时间</comment>
+	        </item>
+	        
+	        <item id="TPool_IdleTimeKill">
+	            <name>TPool_IdleTimeKill</name>
+				<value>600</value>
+				<comment>空闲自毁时长</comment>
+	        </item>
+	        
+	        <item id="TPool_IsWatch">
+	            <name>TPool_IsWatch</name>
+				<value>true</value>
+				<comment>监视线程池</comment>
+	        </item>
+	        
+		</xparam>
+		
+	</xconfig>
+	
+</config>
