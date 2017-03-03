@@ -1,0 +1,4 @@
+Manifest-Version: 6.5.S25
+Created-By: HY.ZhengWei@qq.com  2016
+Specification-Version: 6.5.S25  2017-02-24
+Main-Class: com.hy.stock.Stock
