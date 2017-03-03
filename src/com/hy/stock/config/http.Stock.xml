@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="https"           class="java.util.ArrayList" />
+	<import name="http"            class="org.hy.common.xml.XHttp" />
+	<import name="param"           class="org.hy.common.xml.XHttpParam" />
+	
+	
+	<https>
+		
+		<!-- 股票接口 -->
+		<http id="HTTP_Stock">
+			<protocol>http</protocol>
+			<ip>sqt.gtimg.cn</ip>
+			<url>/utf8/</url>
+			<contentType>application/json</contentType>
+			<charset>utf8</charset>
+			<requestType ref="this.$Request_Type_Get" />
+			<haveQuestionMark>false</haveQuestionMark>
+			
+			<!-- 添加请求参数 -->
+			<addParam>
+				<paramName>q</paramName>
+			</addParam>
+			
+			<addParam>
+				<paramName>offset</paramName>
+			</addParam>
+		</http>
+		
+		
+		
+		<!-- 股票历史交易的概要数据接口 -->
+		<http id="HTTP_StockHistory">
+			<protocol>http</protocol>
+			<ip>web.ifzq.gtimg.cn</ip>
+			<url>/appstock/app/fqkline/get</url>
+			<contentType>application/json</contentType>
+			<charset>utf8</charset>
+			<requestType ref="this.$Request_Type_Get" />
+			
+			<!-- 添加请求参数 -->
+			<addParam>
+				<paramName>param</paramName>
+			</addParam>
+		</http>
+		
+		
+		
+		<!-- 股票大单接口 -->
+		<http id="HTTP_StockLargeTrading">
+			<protocol>http</protocol>
+			<ip>stock.finance.qq.com</ip>
+			<url>/sstock/list/view/dadan.php</url>
+			<contentType>application/json</contentType>
+			<charset>utf8</charset>
+			<requestType ref="this.$Request_Type_Get" />
+			
+			<!-- 添加请求参数 -->
+			<addParam>
+				<paramName>c</paramName>
+			</addParam>
+			
+			<addParam>
+				<paramName>max</paramName>
+				<paramValue>100000</paramValue>  
+			</addParam>
+			
+			<addParam>
+				<paramName>p</paramName>
+				<paramValue>1</paramValue>  
+			</addParam>
+			
+			<addParam>
+				<paramName>t</paramName>
+				<paramValue>js</paramValue>
+			</addParam>
+			
+			<addParam>
+				<paramName>opt</paramName>
+				<paramValue>10</paramValue>  
+			</addParam>
+		</http>
+		
+	</https>
+
+</config>
