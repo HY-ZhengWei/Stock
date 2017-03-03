@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="sqls"            class="java.util.ArrayList" />
+	<import name="sqlGroup"        class="org.hy.common.xml.plugins.XSQLGroup" />
+	<import name="sql"             class="org.hy.common.xml.XSQL" />
+
+
+
+    <!-- 股票每天最终交易数据模块的相关SQL -->
+	<sqls>
+	
+		<!-- 查询每天最终交易数据的数据类型 -->
+		<sql id="XSQL_StockInfoDay_Query_DataType">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+                SELECT  'bfq'    AS DataType_Http
+                       ,'BFQ'    AS DataType
+                  FROM  DUAL
+                 UNION  ALL
+                SELECT  'cq'     AS DataType_Http
+                       ,''       AS DataType
+                  FROM  DUAL
+                 UNION  ALL
+                SELECT  'qfq'    AS DataType_Http
+                       ,'QFQ'    AS DataType
+                  FROM  DUAL
+                 UNION  ALL
+                SELECT  'hfq'    AS DataType_Http
+                       ,'HFQ'    AS DataType
+                  FROM  DUAL
+				]]>
+			</content>
+			
+			<result>
+				<row>java.util.HashMap</row>
+				<cfill>put(colName ,colValue)</cfill>
+				<cstyle>normal</cstyle>
+			</result>
+			
+		</sql>
+		
+		
+	
+		<!-- 查询每天最后交易信息的最近X个交易日的最小时间 -->
+		<sql id="XSQL_StockInfoDay_Query_XWorkMinTime">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+                SELECT  MIN(WA.stockDay)  AS stockDay
+                  FROM  (
+                         SELECT  A.stockDay
+                           FROM  TStockInfoDay  A
+                     <[   WHERE  A.stockCode = ':StockCode'   ]>
+                          GROUP  BY A.stockDay
+                          ORDER  BY A.stockDay DESC
+                          LIMIT  0 ,:DayCount
+                        )   WA
+				]]>
+			</content>
+			
+			<result>
+				<row>com.hy.stock.bean.StockInfoDay</row>
+				<cfill>setter(colValue)</cfill>
+			</result>
+			
+		</sql>
+		
+		
+	
+		<!-- 查询每天最后交易的信息 -->
+		<sql id="XSQL_StockInfoDay_Query">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				SELECT  CONCAT(A.stockCode ,':DataType_Http')  AS DataType
+				       ,A.stockDay
+				       ,A.stockDayNo
+				       ,A.weekNo
+				       ,A.id
+                       ,A.stockName
+                       ,A.stockCode
+                       ,A.yesterdayClosePrice
+                       ,A.todayOpenPrice
+                       ,A.newPrice
+                       ,A.maxPrice
+                       ,A.minPrice
+                       ,A.upDownPrice
+                       ,A.upDownRange
+                       ,A.bargainSum
+                       ,A.bargainSize
+                       ,A.turnoverRate
+                       ,A.swingRate
+                       ,A.outSize
+                       ,A.inSize
+                       ,A.priceEarningRatio
+                       ,A.priceBookValueRatio
+                       ,A.time
+                       ,A.k
+                       ,A.d
+                       ,A.j
+                       ,(
+                         SELECT  MIN(SA.minPrice)
+                           FROM  TStockInfoDay:DataType  SA
+                          WHERE  SA.stockCode = A.stockCode
+                            AND  SA.stockDay >= ':stockDay'
+                        )    AS  minPriceXDay
+                       ,(
+                         SELECT  MAX(SB.maxPrice)
+                           FROM  TStockInfoDay:DataType  SB
+                          WHERE  SB.stockCode = A.stockCode
+                            AND  SB.stockDay >= ':stockDay'
+                        )    AS  maxPriceXDay
+                       ,A.ema12
+                       ,A.ema26
+                       ,A.dif
+                       ,A.dea
+                       ,A.macd
+                       ,A.wr6
+                       ,A.wr10
+                       ,(
+                         SELECT  MIN(SA.minPrice)
+                           FROM  TStockInfoDay:DataType  SA
+                          WHERE  SA.stockCode   = A.stockCode
+                            AND  SA.stockDayNo >= A.stockDayNo - 5
+                            AND  SA.stockDayNo <= A.stockDayNo
+                        )    AS  minPriceYDay
+                       ,(
+                         SELECT  MAX(SB.maxPrice)
+                           FROM  TStockInfoDay:DataType  SB
+                          WHERE  SB.stockCode   = A.stockCode
+                            AND  SB.stockDayNo >= A.stockDayNo - 5
+                            AND  SB.stockDayNo <= A.stockDayNo
+                        )    AS  maxPriceYDay
+                       ,(
+                         SELECT  MIN(SC.minPrice)
+                           FROM  TStockInfoDay:DataType  SC
+                          WHERE  SC.stockCode   = A.stockCode
+                            AND  SC.stockDayNo >= A.stockDayNo - 9
+                            AND  SC.stockDayNo <= A.stockDayNo
+                        )    AS  minPriceZDay
+                       ,(
+                         SELECT  MAX(SD.maxPrice)
+                           FROM  TStockInfoDay:DataType  SD
+                          WHERE  SD.stockCode   = A.stockCode
+                            AND  SD.stockDayNo >= A.stockDayNo - 9
+                            AND  SD.stockDayNo <= A.stockDayNo
+                        )    AS  maxPriceZDay
+                       ,A.ma5
+                       ,A.ma10
+                       ,A.ma20
+                       ,A.ma30
+                       ,A.ma60
+                       ,A.ma108
+				  FROM  TStockInfoDay:DataType  A
+				 WHERE  A.stockDay >= ':stockDay'
+				 ORDER  BY A.stockCode
+				          ,A.stockDay  DESC
+				]]>
+			</content>
+			
+			<result>
+				<table>org.hy.common.TablePartition</table>
+				<fill>putRow(row.dataType ,row)</fill>
+				<row>com.hy.stock.bean.StockInfoDay</row>
+				<cfill>setter(colValue)</cfill>
+			</result>
+			
+		</sql>
+		
+		
+		
+		<!-- 查询每天最后交易的信息（将四个表的数据，整合成一个集合对象整体返回） -->
+		<sqlGroup id="GXSQL_StockInfoDay_Query">
+		
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_Query_DataType" />
+				<type ref="this.$Type_Query" />
+			</sqlNode>
+			
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_Query" />
+				<type ref="this.$Type_Query" />
+				<returnID>StockInfoDays</returnID>
+				<returnAppend>true</returnAppend>
+			</sqlNode>
+		
+		</sqlGroup>
+		
+		
+		
+		<!-- 生成每天最后交易的信息 -->
+		<sql id="XSQL_StockInfoDay_QueryPerDayMaxTime">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				SELECT  WA.stockDay
+				       ,WB.id
+                       ,WB.stockName
+                       ,WB.stockCode
+                       ,WB.yesterdayClosePrice
+                       ,WB.todayOpenPrice
+                       ,WB.newPrice
+                       ,WB.maxPrice
+                       ,WB.minPrice
+                       ,WB.upDownPrice
+                       ,WB.upDownRange
+                       ,WB.bargainSum
+                       ,WB.bargainSize
+                       ,WB.turnoverRate
+                       ,WB.swingRate
+                       ,WB.outSize
+                       ,WB.inSize
+                       ,WB.priceEarningRatio
+                       ,WB.priceBookValueRatio
+                       ,WB.time
+				  FROM  (
+						SELECT  A.stockCode
+							   ,DATE_FORMAT(A.time ,'%Y-%m-%d')                                        AS stockDay
+							   ,MAX(CONCAT(Date_Format(A.time ,'%Y%m%d%H%i%s') ,A.bargainSize, A.ID))  AS maxTimeID
+						  FROM  TStockInfo_2017  A
+				         WHERE  A.time           >= ':BeginTime'
+				           AND  A.time           <  ':EndTime'
+				           AND  A.todayOpenPrice >  0
+						 GROUP  BY A.stockCode ,DATE_FORMAT(A.time ,'%Y-%m-%d')
+				        )                WA
+				       ,TStockInfo_2017  WB
+				 WHERE  WA.maxTimeID = CONCAT(Date_Format(WB.time ,'%Y%m%d%H%i%s') ,WB.bargainSize, WB.ID)
+				   AND  WA.stockCode = WB.stockCode
+                   AND  NOT EXISTS (
+                                    SELECT  1
+                                      FROM  TStockInfoDay  WC
+                                     WHERE  WC.stockDay = WA.stockDay
+                                   )
+                 ORDER  BY WB.stockCode 
+                          ,WA.stockDay
+				]]>
+			</content>
+			
+			<result>
+				<row>com.hy.stock.bean.StockInfoDay</row>
+				<cfill>setter(colValue)</cfill>
+			</result>
+			
+		</sql>
+		
+		
+		
+        <!-- 新增股票每天最终交易数据 -->
+		<sql id="XSQL_StockInfoDay_Add"> 
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				INSERT  INTO TStockInfoDay:DataType
+				       (
+				        id
+                       ,stockDay
+                       ,stockDayNo
+                       ,weekNo
+                       ,stockName
+                       ,stockCode
+                       ,yesterdayClosePrice
+                       ,todayOpenPrice
+                       ,newPrice
+                       ,maxPrice
+                       ,minPrice
+                       ,upDownPrice
+                       ,upDownRange
+                       ,bargainSum
+                       ,bargainSize
+                       ,turnoverRate
+                       ,swingRate
+                       ,outSize
+                       ,inSize
+                       ,priceEarningRatio
+                       ,priceBookValueRatio
+                       ,time
+                       ,k
+                       ,d
+                       ,j
+                       ,ema12
+                       ,ema26
+                       ,dif
+                       ,dea
+                       ,macd
+                       ,wr6
+                       ,wr10
+                       )
+                VALUES (
+                        ':id'
+                       ,':stockDay'
+                       , :stockDayNo
+                       , :weekNo
+                       ,':stockName'
+                       ,':stockCode'
+                       , :yesterdayClosePrice
+                       , :todayOpenPrice
+                       , :newPrice
+                       , :maxPrice
+                       , :minPrice
+                       , :upDownPrice
+                       , :upDownRange
+                       , :bargainSum
+                       , :bargainSize
+                       , :turnoverRate
+                       , :swingRate
+                       , :outSize
+                       , :inSize
+                       , :priceEarningRatio
+                       , :priceBookValueRatio
+                       ,':time'
+                       , :k
+                       , :d
+                       , :j
+                       , :ema12
+                       , :ema26
+                       , :dif
+                       , :dea
+                       , :macd
+                       , :wr6
+                       , :wr10
+                       )
+				]]>
+			</content>
+			
+		</sql>
+		
+		
+		
+		<!-- 新增股票每天最终交易数据（可生成星期几、KDJ指标、MACD指标等信息） -->
+		<sqlGroup id="GXSQL_StockInfoDay_ADD">
+		
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_QueryPerDayMaxTime" />
+				<type ref="this.$Type_Query" />
+			</sqlNode>
+		
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_Query_DataType" />
+				<type ref="this.$Type_Query" />
+			</sqlNode>
+		
+			<sqlNode>
+				<type ref="this.$Type_ExecuteJava" />
+				<xjavaID>StockInfoDayDAO</xjavaID>
+	    		<methodName>makeStockInfoDays_Calc</methodName>
+			</sqlNode>
+			
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_Add" />
+				<type ref="this.$Type_ExecuteUpdate" />
+				<afterCommit>true</afterCommit>
+			</sqlNode>
+			
+		</sqlGroup>
+		
+	</sqls>
+	
+</config>

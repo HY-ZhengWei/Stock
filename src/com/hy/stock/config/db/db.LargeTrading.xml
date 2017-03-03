@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="sqls"            class="java.util.ArrayList" />
+	<import name="sql"             class="org.hy.common.xml.XSQL" />
+
+
+
+    <!-- 大单交易模块的相关SQL -->
+	<sqls>
+
+		<!-- 新增大单交易数据 -->
+		<sql id="XSQL_LargeTrading_Add"> 
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				INSERT  INTO TLargeTrading
+				       (
+				        id
+                       ,stockCode
+                       ,stockName
+                       ,tradingNo
+                       ,bargainPrice
+                       ,bargainSum
+                       ,bargainSize
+                       ,tradingType
+                       ,time
+                       )
+                VALUES (
+				        ':id'
+                       ,':stockCode'
+                       ,':stockName'
+                       ,':tradingNo'
+                       ,:bargainPrice
+                       ,:bargainSum
+                       ,:bargainSize
+                       ,':tradingType'
+                       ,':time'
+                       )
+				]]>
+			</content>
+			
+		</sql>
+		
+		
+		
+		<!-- 查询大单交易数据 -->
+		<sql id="XSQL_LargeTrading_Query"> 
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				SELECT  A.id
+                       ,A.stockCode
+                       ,A.stockName
+                       ,A.tradingNo
+                       ,A.bargainPrice
+                       ,A.bargainSum
+                       ,A.bargainSize
+                       ,A.tradingType
+                       ,A.time
+				  FROM  TLargeTrading  A
+				 WHERE  A.time >= ':time'
+				 ORDER  BY A.stockCode
+				          ,A.time
+				]]>
+			</content>
+			
+			<result>
+				<table>org.hy.common.TablePartitionRID</table>
+				<fill>putRow(row.stockCode ,row.tradingNo ,row)</fill>
+				<row>com.hy.stock.bean.LargeTrading</row>
+				<cfill>setter(colValue)</cfill>
+			</result>
+			
+		</sql>
+		
+	</sqls>
+	
+</config>

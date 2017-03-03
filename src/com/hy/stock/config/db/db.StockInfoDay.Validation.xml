@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="sqls"            class="java.util.ArrayList" />
+	<import name="sqlGroup"        class="org.hy.common.xml.plugins.XSQLGroup" />
+	<import name="sql"             class="org.hy.common.xml.XSQL" />
+
+
+
+    <!-- 股票每天最终交易数据模块：对比效验交易数据的相关SQL -->
+	<sqls>
+	
+	   <!-- 查询每天交易信息的最近180个交易日的最小时间 -->
+        <sql id="XSQL_StockInfoDay_Query_180WorkMinTime">
+        
+            <dataSourceGroup ref="DSG_Stock" />
+            
+            <content>
+                <![CDATA[
+                SELECT  MIN(WA.stockDay)  AS stockDay
+                  FROM  (
+                         SELECT  A.stockDay
+                           FROM  TStockInfoDay  A
+                          GROUP  BY A.stockDay
+                          ORDER  BY A.stockDay DESC
+                          LIMIT  0 ,90
+                        )   WA
+                ]]>
+            </content>
+            
+            <result>
+                <row>com.hy.stock.bean.StockInfoDay</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+            
+        </sql>
+        
+        
+	
+		<!-- 查询每天最后交易的信息（从远到近排序） -->
+		<sql id="XSQL_StockInfoDay_ValidationQuery">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				SELECT  A.stockDay
+				       ,A.stockDayNo
+				       ,A.weekNo
+				       ,A.id
+                       ,A.stockName
+                       ,A.stockCode
+                       ,A.yesterdayClosePrice
+                       ,A.todayOpenPrice
+                       ,A.newPrice
+                       ,A.maxPrice
+                       ,A.minPrice
+                       ,A.upDownPrice
+                       ,A.upDownRange
+                       ,A.bargainSum
+                       ,A.bargainSize
+                       ,A.turnoverRate
+                       ,A.swingRate
+                       ,A.outSize
+                       ,A.inSize
+                       ,A.priceEarningRatio
+                       ,A.priceBookValueRatio
+                       ,A.time
+                       ,A.k
+                       ,A.d
+                       ,A.j
+                       ,(
+                         SELECT  MIN(SA.minPrice)
+                           FROM  TStockInfoDay:DataType  SA
+                          WHERE  SA.stockCode = A.stockCode
+                            AND  SA.stockDay >= ':stockDay'
+                        )    AS  minPriceXDay
+                       ,(
+                         SELECT  MAX(SB.maxPrice)
+                           FROM  TStockInfoDay:DataType  SB
+                          WHERE  SB.stockCode = A.stockCode
+                            AND  SB.stockDay >= ':stockDay'
+                        )    AS  maxPriceXDay
+                       ,A.ema12
+                       ,A.ema26
+                       ,A.dif
+                       ,A.dea
+                       ,A.macd
+                       ,A.wr6
+                       ,A.wr10
+				  FROM  TStockInfoDay:DataType  A
+				 WHERE  A.stockDay >= ':stockDay'
+				 ORDER  BY A.stockCode
+				          ,A.stockDay  ASC
+				]]>
+			</content>
+			
+			<result>
+				<row>com.hy.stock.bean.StockInfoDay</row>
+				<cfill>setter(colValue)</cfill>
+			</result>
+			
+		</sql>
+		
+		
+		
+		<!-- 对比效验更新概要数据 -->
+		<sql id="XSQL_StockInfoDay_ValidationUpdate">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+                UPDATE  TStockInfoDay:DataType
+                   SET  yesterdayClosePrice =  :yesterdayClosePrice
+                       ,todayOpenPrice      =  :todayOpenPrice
+                       ,newPrice            =  :newPrice
+                       ,maxPrice            =  :maxPrice
+                       ,minPrice            =  :minPrice
+                       ,bargainSum          =  :bargainSum
+                 WHERE  stockCode           = ':stockCode'
+                   AND  stockDay            = ':stockDay'
+				]]>
+			</content>
+			
+		</sql>
+		
+		
+		
+		<!-- 对每天日结的最终交易数据进行对比效验（只有概要数据的效验） -->
+		<sqlGroup id="GXSQL_StockInfoDay_Validations">
+		
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_Query_DataType" />
+				<type ref="this.$Type_Query" />
+			</sqlNode>
+		
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_Query_180WorkMinTime" />
+				<type ref="this.$Type_Query" />
+			</sqlNode>
+			
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_ValidationQuery" />
+				<type ref="this.$Type_Query" />
+			</sqlNode>
+			
+			<sqlNode>
+				<type ref="this.$Type_ExecuteJava" />
+				<xjavaID>StockDayService</xjavaID>
+	    		<methodName>validationStockDays_Compare</methodName>
+			</sqlNode>
+			
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_ValidationUpdate" />
+				<type ref="this.$Type_ExecuteUpdate" />
+				<condition><![CDATA[:IsUpdate == 1]]></condition>
+				<afterCommit>true</afterCommit>
+			</sqlNode>
+			
+		</sqlGroup>
+		
+	</sqls>
+	
+</config>

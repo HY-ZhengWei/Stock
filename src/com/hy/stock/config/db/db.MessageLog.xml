@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="sqls"            class="java.util.ArrayList" />
+	<import name="sqlGroup"        class="org.hy.common.xml.plugins.XSQLGroup" />
+	<import name="sql"             class="org.hy.common.xml.XSQL" />
+
+
+
+    <!-- 消息模块的相关SQL -->
+	<sqls>
+		
+        <!-- 新增消息 -->
+		<sql id="XSQL_MessageLog_Add"> 
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				INSERT  INTO TMessageLog
+				       (
+				        id
+                       ,stockDay
+                       ,stockDayNo
+                       ,weekNo
+                       ,stockName
+                       ,stockCode
+                       ,messageType
+                       ,message
+                       ,goodBad
+                       ,sendStatus
+                       ,sendCount
+                       ,sendTime
+                       ,yesterdayClosePrice
+                       ,todayOpenPrice
+                       ,newPrice
+                       ,maxPrice
+                       ,minPrice
+                       ,upDownPrice
+                       ,upDownRange
+                       ,bargainSum
+                       ,bargainSize
+                       ,turnoverRate
+                       ,swingRate
+                       ,outSize
+                       ,inSize
+                       ,priceEarningRatio
+                       ,priceBookValueRatio
+                       ,time
+                       ,k
+                       ,d
+                       ,j
+                       ,ema12
+                       ,ema26
+                       ,dif
+                       ,dea
+                       ,macd
+                       ,wr6
+                       ,wr10
+                       )
+                VALUES (
+                        ':id'
+                       ,':stockDay'
+                       , :stockDayNo
+                       , :weekNo
+                       ,':stockName'
+                       ,':stockCode'
+                       ,':messageType'
+                       ,':message'
+                       , :goodBad
+                       ,  0
+                       ,  0
+                       ,  NULL
+                       , :yesterdayClosePrice
+                       , :todayOpenPrice
+                       , :newPrice
+                       , :maxPrice
+                       , :minPrice
+                       , :upDownPrice
+                       , :upDownRange
+                       , :bargainSum
+                       , :bargainSize
+                       , :turnoverRate
+                       , :swingRate
+                       , :outSize
+                       , :inSize
+                       , :priceEarningRatio
+                       , :priceBookValueRatio
+                       ,':time'
+                       , :k
+                       , :d
+                       , :j
+                       , :ema12
+                       , :ema26
+                       , :dif
+                       , :dea
+                       , :macd
+                       , :wr6
+                       , :wr10
+                       )
+				]]>
+			</content>
+			
+		</sql>
+		
+		
+		
+		<!-- 查询当天的消息 -->
+		<sql id="XSQL_MessageLog_Query">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				SELECT  A.stockDay
+				       ,A.stockDayNo
+				       ,A.weekNo
+				       ,A.id
+                       ,A.stockName
+                       ,A.stockCode
+                       ,A.messageType
+                       ,A.message
+                       ,A.goodBad
+                       ,A.sendStatus
+                       ,A.sendCount
+                       ,A.sendTime
+                       ,A.yesterdayClosePrice
+                       ,A.todayOpenPrice
+                       ,A.newPrice
+                       ,A.maxPrice
+                       ,A.minPrice
+                       ,A.upDownPrice
+                       ,A.upDownRange
+                       ,A.bargainSum
+                       ,A.bargainSize
+                       ,A.turnoverRate
+                       ,A.swingRate
+                       ,A.outSize
+                       ,A.inSize
+                       ,A.priceEarningRatio
+                       ,A.priceBookValueRatio
+                       ,A.time
+                       ,A.k
+                       ,A.d
+                       ,A.j
+                       ,A.ema12
+                       ,A.ema26
+                       ,A.dif
+                       ,A.dea
+                       ,A.macd
+                       ,A.wr6
+                       ,A.wr10
+                       ,A.ma5
+                       ,A.ma10
+                       ,A.ma20
+                       ,A.ma30
+                       ,A.ma60
+                       ,A.ma108
+				  FROM  TMessageLog  A
+				 WHERE  A.stockDay >= ':stockDay'
+				 ORDER  BY A.stockCode
+				          ,A.time
+				]]>
+			</content>
+			
+			<result>
+				<table>org.hy.common.TablePartition</table>
+				<fill>putRow(row.stockCode ,row)</fill>
+				<row>com.hy.stock.bean.MessageInfo</row>
+				<cfill>setter(colValue)</cfill>
+			</result>
+			
+		</sql>
+		
+	</sqls>
+	
+</config>

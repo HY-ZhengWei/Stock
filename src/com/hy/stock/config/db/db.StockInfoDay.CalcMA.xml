@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="sqls"            class="java.util.ArrayList" />
+	<import name="sqlGroup"        class="org.hy.common.xml.plugins.XSQLGroup" />
+	<import name="sql"             class="org.hy.common.xml.XSQL" />
+
+
+
+    <!-- 股票每天最终交易数据模块：计算MA移动平均线(均线)的相关SQL -->
+	<sqls>
+	
+		<!-- 查询股票首日上市的交易信息（只计算前复权价格下的MA） -->
+		<sql id="XSQL_StockInfoDay_CalcMA_QueryFristDay">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				SELECT  A.stockCode
+				       ,A.stockName
+				  FROM  TStockInfoDayQFQ  A
+				 WHERE  A.stockDayNo = 1
+		     <[    AND  A.stockCode  = ':QueryStockCode'      ]>
+                 ORDER  BY A.stockDay
+                          ,A.stockCode
+				]]>
+			</content>
+			
+			<result>
+				<row>java.util.HashMap</row>
+				<cfill>put(colName ,colValue)</cfill>
+				<cstyle>normal</cstyle>
+			</result>
+			
+		</sql>
+		
+		
+		
+		<!-- 查询某一只股票每天交易记录的  5日均线（只计算前复权价格下的MA） -->
+		<!-- 查询某一只股票每天交易记录的 10日均线（只计算前复权价格下的MA） -->
+		<!-- 查询某一只股票每天交易记录的 20日均线（只计算前复权价格下的MA） -->
+		<!-- 查询某一只股票每天交易记录的 30日均线（只计算前复权价格下的MA） -->
+		<!-- 查询某一只股票每天交易记录的 60日均线（只计算前复权价格下的MA） -->
+		<!-- 查询某一只股票每天交易记录的108日均线（只计算前复权价格下的MA） -->
+		<sql id="XSQL_StockInfoDay_CalcMA_QueryXXWorkTime_AvgPrice">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				SELECT  A.stockCode
+				       ,A.stockName
+				       ,A.stockDay
+				       ,A.stockDayNo
+				       ,A.newPrice
+				  FROM  TStockInfoDayQFQ  A
+				 WHERE  A.stockCode  = ':stockCode'
+			 <[    AND  A.stockDay  >= ':QueryStockDay'       ]>
+				 ORDER  BY A.StockDay
+				]]>
+			</content>
+			
+			<result>
+                <row>com.hy.stock.bean.StockInfoDay</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+			
+		</sql>
+		
+		
+		
+		<!-- 更新MA的计算结果（只计算前复权价格下的MA） -->
+		<sql id="XSQL_StockInfoDay_CalcMA_UpdateCalcResult">
+		
+		    <dataSourceGroup ref="DSG_Stock" />
+            
+            <content>
+                <![CDATA[
+                UPDATE  TStockInfoDayQFQ
+                   SET  ma5       =  :ma5
+                       ,ma10      =  :ma10
+                       ,ma20      =  :ma20
+                       ,ma30      =  :ma30
+                       ,ma60      =  :ma60
+                       ,ma108     =  :ma108
+                 WHERE  stockCode = ':stockCode'
+                   AND  StockDay  = ':StockDay'
+                ]]>
+            </content>
+            
+		</sql>
+		
+		
+		
+		<!-- 从股票的上市第一天，首个交易日开始计算起，一直计算到今天。（只计算前复权价格下的MA） -->
+		<sqlGroup id="XSQL_StockInfoDay_CalcMA">
+		
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_CalcMA_QueryFristDay" />
+				<type ref="this.$Type_Query" />
+				<thread>true</thread>
+			</sqlNode>
+			
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_CalcMA_QueryXXWorkTime_AvgPrice" />
+				<type ref="this.$Type_Query" />
+			</sqlNode>
+			
+			<sqlNode>
+				<type ref="this.$Type_ExecuteJava" />
+				<xjavaID>StockInfoDayDAO</xjavaID>
+	    		<methodName>calcMA_ToToday_XSQLNode</methodName>
+			</sqlNode>
+			
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_CalcMA_UpdateCalcResult" />
+				<type ref="this.$Type_ExecuteUpdate" />
+				<afterCommit>true</afterCommit>
+			</sqlNode>
+			
+		</sqlGroup>
+		
+	</sqls>
+	
+</config>

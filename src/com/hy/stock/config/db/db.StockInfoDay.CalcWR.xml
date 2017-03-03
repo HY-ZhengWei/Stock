@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="sqls"            class="java.util.ArrayList" />
+	<import name="sqlGroup"        class="org.hy.common.xml.plugins.XSQLGroup" />
+	<import name="sql"             class="org.hy.common.xml.XSQL" />
+
+
+
+    <!-- 股票每天最终交易数据模块：计算WR的相关SQL -->
+	<sqls>
+	
+		<!-- 查询股票首日上市的交易信息（只计算前复权价格下的WR） -->
+		<sql id="XSQL_StockInfoDay_CalcWR_QueryFristDay">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				SELECT  A.stockCode
+				       ,A.stockName
+				  FROM  TStockInfoDayQFQ  A
+				 WHERE  A.stockDayNo = 1
+		     <[    AND  A.stockCode  = ':QueryStockCode'      ]>
+                 ORDER  BY A.stockDay
+                          ,A.stockCode
+				]]>
+			</content>
+			
+			<result>
+				<row>java.util.HashMap</row>
+				<cfill>put(colName ,colValue)</cfill>
+				<cstyle>normal</cstyle>
+			</result>
+			
+		</sql>
+		
+		
+		
+		<!-- 查询某一只股票每天交易记录的前5天(包含当天共 6)中最小价格和最大价格（只计算前复权价格下的WR） -->
+		<!-- 查询某一只股票每天交易记录的前9天(包含当天共10)中最小价格和最大价格（只计算前复权价格下的WR） -->
+		<sql id="XSQL_StockInfoDay_CalcWR_Query10WorkTime_MaxMinPrice">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				SELECT  J.stockCode
+				       ,J.stockName
+				       ,J.stockDay
+				       ,J.stockDayNo
+				       ,J.newPrice
+				       ,LEAST   (E.minPrice ,F.minPrice ,G.minPrice ,H.minPrice ,I.minPrice ,J.minPrice)  AS minPriceXDay
+				       ,GREATEST(E.maxPrice ,F.maxPrice ,G.maxPrice ,H.maxPrice ,I.maxPrice ,J.maxPrice)  AS maxPriceXDay
+				       ,LEAST   (A.minPrice ,B.minPrice ,C.minPrice ,D.minPrice
+				                ,E.minPrice ,F.minPrice ,G.minPrice ,H.minPrice ,I.minPrice ,J.minPrice)  AS minPriceYDay
+				       ,GREATEST(A.maxPrice ,B.maxPrice ,C.maxPrice ,D.maxPrice 
+				                ,E.maxPrice ,F.maxPrice ,G.maxPrice ,H.maxPrice ,I.maxPrice ,J.maxPrice)  AS maxPriceYDay
+				  FROM  TStockInfoDayQFQ  A
+				       ,TStockInfoDayQFQ  B
+				       ,TStockInfoDayQFQ  C
+				       ,TStockInfoDayQFQ  D
+				       ,TStockInfoDayQFQ  E
+				       ,TStockInfoDayQFQ  F
+				       ,TStockInfoDayQFQ  G
+				       ,TStockInfoDayQFQ  H
+				       ,TStockInfoDayQFQ  I
+				       ,TStockInfoDayQFQ  J
+				 WHERE  A.stockCode  = ':stockCode'
+				   AND  B.stockCode  = A.stockCode
+				   AND  C.stockCode  = A.stockCode
+				   AND  D.stockCode  = A.stockCode
+				   AND  E.stockCode  = A.stockCode
+				   AND  F.stockCode  = A.stockCode
+				   AND  G.stockCode  = A.stockCode
+				   AND  H.stockCode  = A.stockCode
+				   AND  I.stockCode  = A.stockCode
+				   AND  J.stockCode  = A.stockCode
+				   AND  B.stockDayNo = A.stockDayNo + 1
+				   AND  C.stockDayNo = A.stockDayNo + 2
+				   AND  D.stockDayNo = A.stockDayNo + 3
+				   AND  E.stockDayNo = A.stockDayNo + 4
+				   AND  F.stockDayNo = A.stockDayNo + 5
+				   AND  G.stockDayNo = A.stockDayNo + 6
+				   AND  H.stockDayNo = A.stockDayNo + 7
+				   AND  I.stockDayNo = A.stockDayNo + 8
+				   AND  J.stockDayNo = A.stockDayNo + 9
+			 <[    AND  J.stockDay  >= ':QueryStockDay'       ]>
+				 ORDER  BY J.StockDay
+				]]>
+			</content>
+			
+			<result>
+                <row>com.hy.stock.bean.StockInfoDay</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+			
+		</sql>
+		
+		
+		
+		<!-- 更新WR的计算结果（只计算前复权价格下的WR） -->
+		<sql id="XSQL_StockInfoDay_CalcWR_UpdateCalcResult">
+		
+		    <dataSourceGroup ref="DSG_Stock" />
+            
+            <content>
+                <![CDATA[
+                UPDATE  TStockInfoDayQFQ
+                   SET  wr6       =  :wr6
+                       ,wr10      =  :wr10
+                 WHERE  stockCode = ':stockCode'
+                   AND  StockDay  = ':StockDay'
+                ]]>
+            </content>
+            
+		</sql>
+		
+		
+		
+		<!-- 从股票的上市第一天，首个交易日开始计算起，一直计算到今天。（只计算前复权价格下的WR） -->
+		<sqlGroup id="XSQL_StockInfoDay_CalcWR">
+		
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_CalcWR_QueryFristDay" />
+				<type ref="this.$Type_Query" />
+				<thread>true</thread>
+			</sqlNode>
+			
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_CalcWR_Query10WorkTime_MaxMinPrice" />
+				<type ref="this.$Type_Query" />
+			</sqlNode>
+			
+			<sqlNode>
+				<type ref="this.$Type_ExecuteJava" />
+				<xjavaID>StockInfoDayDAO</xjavaID>
+	    		<methodName>calcWR_ToToday_XSQLNode</methodName>
+			</sqlNode>
+			
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_CalcWR_UpdateCalcResult" />
+				<type ref="this.$Type_ExecuteUpdate" />
+				<afterCommit>true</afterCommit>
+			</sqlNode>
+			
+		</sqlGroup>
+		
+	</sqls>
+	
+</config>

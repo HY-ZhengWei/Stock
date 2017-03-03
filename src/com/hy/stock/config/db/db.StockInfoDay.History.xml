@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="sqls"            class="java.util.ArrayList" />
+	<import name="sqlGroup"        class="org.hy.common.xml.plugins.XSQLGroup" />
+	<import name="sql"             class="org.hy.common.xml.XSQL" />
+
+
+
+    <!-- 股票每天最终交易数据模块：补填历史概要数据的相关SQL -->
+	<sqls>
+	
+		<!-- 查询每只股票的最小交易时间 -->
+		<sql id="XSQL_StockInfoDay_Query_MinStockDay">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+                SELECT  A.stockCode
+                       ,MAX(A.stockName)  AS stockName
+                       ,MIN(A.stockDay)   AS stockDay
+                  FROM  TStockInfoDay:DataType  A
+                 GROUP  BY A.stockCode
+				]]>
+			</content>
+			
+			<result>
+				<row>com.hy.stock.bean.StockInfoDay</row>
+				<cfill>setter(colValue)</cfill>
+			</result>
+			
+		</sql>
+		
+	
+		
+		<!-- 新增股票每天最终交易数据（历史的概要数据） -->
+		<sql id="XSQL_StockInfoDay_AddHistory"> 
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				INSERT  INTO TStockInfoDay:DataType
+				       (
+				        id
+                       ,stockDay
+                       ,stockDayNo
+                       ,weekNo
+                       ,stockName
+                       ,stockCode
+                       ,yesterdayClosePrice
+                       ,todayOpenPrice
+                       ,newPrice
+                       ,maxPrice
+                       ,minPrice
+                       ,bargainSum
+                       ,time
+                       )
+                VALUES (
+                        ':id'
+                       ,':stockDay'
+                       ,:stockDayNo
+                       ,:weekNo
+                       ,':stockName'
+                       ,':stockCode'
+                       ,:yesterdayClosePrice
+                       ,:todayOpenPrice
+                       ,:newPrice
+                       ,:maxPrice
+                       ,:minPrice
+                       ,:bargainSum
+                       ,':time'
+                       )
+				]]>
+			</content>
+			
+		</sql>
+		
+		
+		
+		<!-- 查询准备更新 "交易日期的序列号" -->
+		<sql id="XSQL_StockInfoDay_History_StockDayNo_Query">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+                SELECT  A.stockCode
+                       ,A.stockDay
+                  FROM  TStockInfoDay:DataType  A
+                 WHERE  A.stockCode = ':stockCode'
+                   AND  A.stockDay >= ':minStockDay'
+                 ORDER  BY A.stockDay
+				]]>
+			</content>
+			
+			<result>
+				<row>java.util.HashMap</row>
+				<cfill>put(colName ,colValue)</cfill>
+			</result>
+			
+		</sql>
+		
+		
+		
+		<!-- 更新交易日期的序列号 -->
+		<sql id="XSQL_StockInfoDay_History_StockDayNo_Update">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+                UPDATE  TStockInfoDay:DataType
+                   SET  stockDayNo = :RowIndex_ + :baseStockDayNo
+                 WHERE  stockCode  = ':stockCode'
+                   AND  stockDay   = ':stockDay'
+				]]>
+			</content>
+			
+		</sql>
+		
+		
+		
+		<!-- 更新交易日期的序列号 -->
+		<sqlGroup id="GXSQL_StockInfoDay_History_StockDayNo">
+		
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_History_StockDayNo_Query" />
+				<type ref="this.$Type_Query" />
+			</sqlNode>
+			
+			<sqlNode>
+				<sql  ref="XSQL_StockInfoDay_History_StockDayNo_Update" />
+				<type ref="this.$Type_ExecuteUpdate" />
+			</sqlNode>
+			
+		</sqlGroup>
+		
+	</sqls>
+	
+</config>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="sqls"            class="java.util.ArrayList" />
+	<import name="sql"             class="org.hy.common.xml.XSQL" />
+
+
+
+    <!-- 股票模块的相关SQL -->
+	<sqls>
+
+		<!-- 新增股票信息 -->
+		<sql id="XSQL_StockInfo_Add"> 
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+				INSERT  INTO TStockInfo_2017
+				       (
+				        id
+                       ,stockName
+                       ,stockCode
+                       ,yesterdayClosePrice
+                       ,todayOpenPrice
+                       ,newPrice
+                       ,maxPrice
+                       ,minPrice
+                       ,upDownPrice
+                       ,upDownRange
+                       ,bargainSum
+                       ,bargainSize
+                       ,turnoverRate
+                       ,swingRate
+                       ,outSize
+                       ,inSize
+                       ,priceEarningRatio
+                       ,priceBookValueRatio
+                       ,time
+                       ,dbTime
+                       )
+                VALUES (
+                        ':id'
+                       ,':stockName'
+                       ,':stockCode'
+                       , :yesterdayClosePrice
+                       , :todayOpenPrice
+                       , :newPrice
+                       , :maxPrice
+                       , :minPrice
+                       , :upDownPrice
+                       , :upDownRange
+                       , :bargainSum
+                       , :bargainSize
+                       , :turnoverRate
+                       , :swingRate
+                       , :outSize
+                       , :inSize
+                       , :priceEarningRatio
+                       , :priceBookValueRatio
+                       ,':time'
+                       ,Now()
+                       )
+				]]>
+			</content>
+			
+		</sql>
+		
+		
+		
+		<!-- 删除重复数据 -->
+		<sql id="XSQL_StockInfo_DelRepeating">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+                DELETE  FROM TStockInfo_2017
+                 WHERE  EXISTS (
+                               SELECT  A.maxDBTime
+                                 FROM (
+                                       SELECT  MAX(dbTime)  AS maxDBTime
+                                              ,time 
+                                              ,stockCode
+                                         FROM  TStockInfo_2017
+                                        WHERE  time >= DATE_SUB(NOW() ,INTERVAL 10 MINUTE)
+                                        GROUP  BY time ,stockCode
+                                       HAVING  COUNT(ID) >= 2
+                                      )  A
+                                WHERE  TStockInfo_2017.dbTime    < A.maxDBTime
+                                  AND  TStockInfo_2017.stockCode = A.stockCode
+                                  AND  TStockInfo_2017.time      = A.time
+                              )
+                   AND  time >= DATE_SUB(NOW() ,INTERVAL 10 MINUTE)
+				]]>
+			</content>
+			
+		</sql>
+		
+		
+		
+		<!-- 删除无效数据(每天开盘前的数据) -->
+		<sql id="XSQL_StockInfo_DelInvalid">
+		
+			<dataSourceGroup ref="DSG_Stock" />
+			
+			<content>
+				<![CDATA[
+                DELETE  FROM TStockInfo_2017
+                 WHERE  time > STR_TO_DATE(':BeginTime' ,'%Y-%m-%d %H:%i:%s')
+                   AND  time < STR_TO_DATE(':EndTime'   ,'%Y-%m-%d %H:%i:%s')
+				]]>
+			</content>
+			
+		</sql>
+		
+	</sqls>
+	
+</config>
