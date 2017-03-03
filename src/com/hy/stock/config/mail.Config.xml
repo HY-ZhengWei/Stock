@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="mails"           class="org.hy.common.CycleList" />
+	<import name="mail"            class="org.hy.common.mail.MailOwnerInfo" />
+	
+	
+	
+	<!-- 邮件配置信息 -->
+	<xconfig>
+		
+		<!-- 发送邮件的主邮箱配置 -->
+		<mails id="CycleMails">
+			<mail>
+				<sendHost>smtp.qq.com</sendHost>
+				<sendPort>465</sendPort>
+				<validate>true</validate>
+				<validateSSL>true</validateSSL>
+				<userName>HY.HappyA@qq.com</userName>
+				<password></password>
+			</mail>
+			
+			<mail>
+				<sendHost>smtp.qq.com</sendHost>
+				<sendPort>465</sendPort>
+				<validate>true</validate>
+				<validateSSL>true</validateSSL>
+				<userName>HY.HappyB@qq.com</userName>
+				<password></password>
+			</mail>
+			
+			<mail>
+				<sendHost>smtp.qq.com</sendHost>
+				<sendPort>465</sendPort>
+				<validate>true</validate>
+				<validateSSL>true</validateSSL>
+				<userName>HY.HappyC@qq.com</userName>
+				<password></password>
+			</mail>
+			
+			<mail>
+				<sendHost>smtp.qq.com</sendHost>
+				<sendPort>465</sendPort>
+				<validate>true</validate>
+				<validateSSL>true</validateSSL>
+				<userName>HY.HappyD@qq.com</userName>
+				<password></password>
+			</mail>
+		
+			<mail>
+				<sendHost>smtp.qq.com</sendHost>
+				<sendPort>465</sendPort>
+				<validate>true</validate>
+				<validateSSL>true</validateSSL>
+				<userName>HY.HappyE@qq.com</userName>
+				<password></password>
+			</mail>
+			
+			<mail>
+				<sendHost>smtp.qq.com</sendHost>
+				<sendPort>465</sendPort>
+				<validate>true</validate>
+				<validateSSL>true</validateSSL>
+				<userName>HY.HappyF@qq.com</userName>
+				<password></password>
+			</mail>
+			
+			<mail>
+				<sendHost>smtp.qq.com</sendHost>
+				<sendPort>465</sendPort>
+				<validate>true</validate>
+				<validateSSL>true</validateSSL>
+				<userName>HY.HappyG@qq.com</userName>
+				<password></password>
+			</mail>
+		</mails>
+		
+	</xconfig>
+	
+</config>
