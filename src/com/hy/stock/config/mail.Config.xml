@@ -19,7 +19,7 @@
 				<validate>true</validate>
 				<validateSSL>true</validateSSL>
 				<userName>HY.HappyA@qq.com</userName>
-				<password></password>
+				<password>hkdiornogccvjbji</password>
 			</mail>
 			
 			<mail>
@@ -28,7 +28,7 @@
 				<validate>true</validate>
 				<validateSSL>true</validateSSL>
 				<userName>HY.HappyB@qq.com</userName>
-				<password></password>
+				<password>jaujzigahlohjjhe</password>
 			</mail>
 			
 			<mail>
@@ -37,7 +37,7 @@
 				<validate>true</validate>
 				<validateSSL>true</validateSSL>
 				<userName>HY.HappyC@qq.com</userName>
-				<password></password>
+				<password>kdqajafyaubnbacb</password>
 			</mail>
 			
 			<mail>
@@ -46,7 +46,7 @@
 				<validate>true</validate>
 				<validateSSL>true</validateSSL>
 				<userName>HY.HappyD@qq.com</userName>
-				<password></password>
+				<password>gwgqihjefowkhbjg</password>
 			</mail>
 		
 			<mail>
@@ -55,7 +55,7 @@
 				<validate>true</validate>
 				<validateSSL>true</validateSSL>
 				<userName>HY.HappyE@qq.com</userName>
-				<password></password>
+				<password>jwbqneixrwbgjgih</password>
 			</mail>
 			
 			<mail>
@@ -64,7 +64,7 @@
 				<validate>true</validate>
 				<validateSSL>true</validateSSL>
 				<userName>HY.HappyF@qq.com</userName>
-				<password></password>
+				<password>zfuizebxwhivbedd</password>
 			</mail>
 			
 			<mail>
@@ -73,8 +73,18 @@
 				<validate>true</validate>
 				<validateSSL>true</validateSSL>
 				<userName>HY.HappyG@qq.com</userName>
-				<password></password>
+				<password>hzohjnlpdydycigf</password>
 			</mail>
+		
+			<!--
+			<mail>
+				<sendHost>smtp.sina.com.cn</sendHost>
+				<sendPort>25</sendPort>
+				<validate>true</validate>
+				<userName>dirful@sina.com</userName>
+				<password>laopo5211314</password>
+			</mail>
+			 -->
 		</mails>
 		
 	</xconfig>
