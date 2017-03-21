@@ -13,78 +13,7 @@
 		
 		<!-- 发送邮件的主邮箱配置 -->
 		<mails id="CycleMails">
-			<mail>
-				<sendHost>smtp.qq.com</sendHost>
-				<sendPort>465</sendPort>
-				<validate>true</validate>
-				<validateSSL>true</validateSSL>
-				<userName>HY.HappyA@qq.com</userName>
-				<password>hkdiornogccvjbji</password>
-			</mail>
 			
-			<mail>
-				<sendHost>smtp.qq.com</sendHost>
-				<sendPort>465</sendPort>
-				<validate>true</validate>
-				<validateSSL>true</validateSSL>
-				<userName>HY.HappyB@qq.com</userName>
-				<password>jaujzigahlohjjhe</password>
-			</mail>
-			
-			<mail>
-				<sendHost>smtp.qq.com</sendHost>
-				<sendPort>465</sendPort>
-				<validate>true</validate>
-				<validateSSL>true</validateSSL>
-				<userName>HY.HappyC@qq.com</userName>
-				<password>kdqajafyaubnbacb</password>
-			</mail>
-			
-			<mail>
-				<sendHost>smtp.qq.com</sendHost>
-				<sendPort>465</sendPort>
-				<validate>true</validate>
-				<validateSSL>true</validateSSL>
-				<userName>HY.HappyD@qq.com</userName>
-				<password>gwgqihjefowkhbjg</password>
-			</mail>
-		
-			<mail>
-				<sendHost>smtp.qq.com</sendHost>
-				<sendPort>465</sendPort>
-				<validate>true</validate>
-				<validateSSL>true</validateSSL>
-				<userName>HY.HappyE@qq.com</userName>
-				<password>jwbqneixrwbgjgih</password>
-			</mail>
-			
-			<mail>
-				<sendHost>smtp.qq.com</sendHost>
-				<sendPort>465</sendPort>
-				<validate>true</validate>
-				<validateSSL>true</validateSSL>
-				<userName>HY.HappyF@qq.com</userName>
-				<password>zfuizebxwhivbedd</password>
-			</mail>
-			
-			<mail>
-				<sendHost>smtp.qq.com</sendHost>
-				<sendPort>465</sendPort>
-				<validate>true</validate>
-				<validateSSL>true</validateSSL>
-				<userName>HY.HappyG@qq.com</userName>
-				<password>hzohjnlpdydycigf</password>
-			</mail>
-		
-			<!--
-			<mail>
-				<sendHost>smtp.sina.com.cn</sendHost>
-				<sendPort>25</sendPort>
-				<validate>true</validate>
-				<userName>dirful@sina.com</userName>
-				<password>laopo5211314</password>
-			</mail>
-			 -->
 		</mails>
 		
 	</xconfig>
