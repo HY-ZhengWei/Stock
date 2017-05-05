@@ -78,7 +78,7 @@
 				   AND  G.stockDayNo = A.stockDayNo + 6
 				   AND  H.stockDayNo = A.stockDayNo + 7
 				   AND  I.stockDayNo = A.stockDayNo + 8
-			 <[    AND  I.stockDay  >= ':QueryStockDay'       ]>
+				<[ AND  I.stockDay  >= ':QueryStockDay'  ]>
 				 ORDER  BY I.StockDay
 				]]>
 			</content>
