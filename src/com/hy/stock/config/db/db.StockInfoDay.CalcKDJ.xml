@@ -22,7 +22,7 @@
 				       ,A.stockName
 				  FROM  TStockInfoDayQFQ  A
 				 WHERE  A.stockDayNo = 1
-			 <[    AND  A.stockCode  = ':QueryStockCode'      ]>
+				<[ AND  A.stockCode  = ':QueryStockCode'  ]>
 				 ORDER  BY A.stockDay
 				          ,A.stockCode
 				]]>
@@ -129,7 +129,7 @@
 			<sqlNode>
 				<type ref="this.$Type_ExecuteJava" />
 				<xjavaID>StockInfoDayDAO</xjavaID>
-	    		<methodName>calcKDJ_ToToday_XSQLNode</methodName>
+				<methodName>calcKDJ_ToToday_XSQLNode</methodName>
 			</sqlNode>
 			
 			<sqlNode>
