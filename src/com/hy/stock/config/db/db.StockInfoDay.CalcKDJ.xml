@@ -22,9 +22,9 @@
 				       ,A.stockName
 				  FROM  TStockInfoDayQFQ  A
 				 WHERE  A.stockDayNo = 1
-		     <[    AND  A.stockCode  = ':QueryStockCode'      ]>
-                 ORDER  BY A.stockDay
-                          ,A.stockCode
+			 <[    AND  A.stockCode  = ':QueryStockCode'      ]>
+				 ORDER  BY A.stockDay
+				          ,A.stockCode
 				]]>
 			</content>
 			
@@ -97,16 +97,16 @@
 		
 		    <dataSourceGroup ref="DSG_Stock" />
             
-            <content>
-                <![CDATA[
-                UPDATE  TStockInfoDayQFQ
-                   SET  k         =  :k
-                       ,d         =  :d
-                       ,j         =  :j
-                 WHERE  stockCode = ':stockCode'
-                   AND  StockDay  = ':StockDay'
-                ]]>
-            </content>
+		    <content>
+		        <![CDATA[
+		        UPDATE  TStockInfoDayQFQ
+		           SET  k         =  :k
+		               ,d         =  :d
+		               ,j         =  :j
+		         WHERE  stockCode = ':stockCode'
+		           AND  StockDay  = ':StockDay'
+		        ]]>
+		    </content>
             
 		</sql>
 		
