@@ -84,9 +84,9 @@
 			</content>
 			
 			<result>
-                <row>com.hy.stock.bean.StockInfoDay</row>
-                <cfill>setter(colValue)</cfill>
-            </result>
+				<row>com.hy.stock.bean.StockInfoDay</row>
+				<cfill>setter(colValue)</cfill>
+			</result>
 			
 		</sql>
 		
