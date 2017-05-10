@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.base"/>
-	<classpathentry kind="lib" path="lib/xjava.jar"/>
 	<classpathentry kind="lib" path="lib/c3p0-0.9.2-pre5.jar"/>
 	<classpathentry kind="lib" path="lib/fel.jar"/>
 	<classpathentry kind="lib" path="lib/javax.mail.jar"/>
@@ -17,5 +16,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.file"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.mail"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.tpool"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/XJava"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
